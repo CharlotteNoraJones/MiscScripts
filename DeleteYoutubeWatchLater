@@ -1,0 +1,7 @@
+function deleteYoutubeWatchLater() {
+  document.querySelectorAll("ytd-playlist-video-renderer.style-scope:nth-child(1) > div:nth-child(3) > ytd-menu-renderer:nth-child(1) > yt-icon-button:nth-child(3)")[0].click();
+  document.querySelector("ytd-menu-service-item-renderer.style-scope:nth-child(3) > tp-yt-paper-item:nth-child(1)").click();  
+  setTimeout(deleteYoutubeWatchLater, 100);
+}
+
+deleteYoutubeWatchLater();
