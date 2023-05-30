@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BookStoreApp.API.Data;
+using BookStoreApp.API.Models.Author;
+using AutoMapper;
 
 namespace BookStoreApp.API.Controllers
 {
@@ -14,20 +16,22 @@ namespace BookStoreApp.API.Controllers
     public class AuthorsController : ControllerBase
     {
         private readonly BookStoreDbContext _context;
+        private readonly IMapper mapper;
 
-        public AuthorsController(BookStoreDbContext context)
+        public AuthorsController(BookStoreDbContext context, IMapper mapper)
         {
             _context = context;
+            this.mapper = mapper;
         }
 
         // GET: api/Authors
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Author>>> GetAuthors()
         {
-          if (_context.Authors == null)
-          {
-              return NotFound();
-          }
+            if (_context.Authors == null)
+            {
+                return NotFound();
+            }
             return Ok(await _context.Authors.ToListAsync());
         }
 
@@ -35,10 +39,10 @@ namespace BookStoreApp.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Author>> GetAuthor(int id)
         {
-          if (_context.Authors == null)
-          {
-              return NotFound();
-          }
+            if (_context.Authors == null)
+            {
+                return NotFound();
+            }
             var author = await _context.Authors.FindAsync(id);
 
             if (author == null)
@@ -83,12 +87,14 @@ namespace BookStoreApp.API.Controllers
         // POST: api/Authors
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Author>> PostAuthor(Author author)
+        public async Task<ActionResult<AuthorCreateDto>> PostAuthor(AuthorCreateDto authorDto)
         {
-          if (_context.Authors == null)
-          {
-              return Problem("Entity set 'BookStoreDbContext.Authors'  is null.");
-          }
+            if (_context.Authors == null)
+            {
+                return Problem("Entity set 'BookStoreDbContext.Authors'  is null.");
+            }
+            
+            var author = mapper.Map<Author>(authorDto);
             await _context.Authors.AddAsync(author);
             await _context.SaveChangesAsync();
 
